@@ -38,7 +38,7 @@ from werkzeug.utils import secure_filename
 
 
 from myapp import myapp_obj, db
-from myapp.forms import SignupForm, LoginForm, FlashCardForm, UploadMarkdownForm, SearchForm, ShareFlashCardForm, RenderMarkdown, NextButton, ObjectiveForm
+from myapp.forms import SignupForm, LoginForm, FlashCardForm, UploadMarkdownForm, SearchForm, ShareFlashCardForm, NextButton, ObjectiveForm
 from myapp.models import User, FlashCard, Friend, FriendStatusEnum, SharedFlashCard
 from myapp.models_methods import get_friend_status, get_all_friends
 from myapp.mdparser import md2flashcard
@@ -478,34 +478,6 @@ def tomato():
     return render_template("/pomodoro.html")
 
 
-# Todo app
-@myapp_obj.route("/todo")
-@login_required
-def myTodo():
-    """Show ToDo list route"""
-    return render_template("todo.html", todo_list=todo_list)
-
-
-@myapp_obj.route("/addTodo", methods=["POST"])
-@login_required
-def addTodo():
-    """Add ToDo item into ToDo list, then redirect back to show ToDo list"""
-    return redirect(url_for("myTodo"))
-
-
-@myapp_obj.route("/updateTodo/<int:todo_id>")
-@login_required
-def updateTodo(todo_id):
-    """Mark ToDo item to complete/not complete, then redirect back to show ToDo list"""
-    return redirect(url_for("myTodo"))
-
-
-@myapp_obj.route("/deleteTodo/<int:todo_id>")
-@login_required
-def deleteTodo(todo_id):
-    """Remove ToDo item from ToDo list, then redirect back to show ToDo list"""
-    return redirect(url_for("myTodo"))
-
 
 @myapp_obj.errorhandler(404)
 def page_not_found(e):
@@ -514,12 +486,4 @@ def page_not_found(e):
 
 
 myapp_obj.register_error_handler(404, page_not_found)
-
-
-@myapp_obj.route("/render")
-@login_required
-def render():
-    """Route for user to render markdwon notes"""
-    text = None
-    return render_template("homepage.html")
 
