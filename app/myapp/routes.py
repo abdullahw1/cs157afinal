@@ -38,8 +38,8 @@ from werkzeug.utils import secure_filename
 
 
 from myapp import myapp_obj, db
-from myapp.forms import SignupForm, LoginForm, FlashCardForm, UploadMarkdownForm, SearchForm, ShareFlashCardForm, RenderMarkdown, NextButton, ObjectiveForm, NoteForm, NoteShareForm
-from myapp.models import User, FlashCard, Friend, FriendStatusEnum, Todo, SharedFlashCard, Note, SharedNote
+from myapp.forms import SignupForm, LoginForm, FlashCardForm, UploadMarkdownForm, SearchForm, ShareFlashCardForm, RenderMarkdown, NextButton, ObjectiveForm
+from myapp.models import User, FlashCard, Friend, FriendStatusEnum, SharedFlashCard
 from myapp.models_methods import get_friend_status, get_all_friends
 from myapp.mdparser import md2flashcard
 
@@ -483,7 +483,6 @@ def tomato():
 @login_required
 def myTodo():
     """Show ToDo list route"""
-    todo_list = Todo.query.filter_by(user_id=current_user.get_id()).all()
     return render_template("todo.html", todo_list=todo_list)
 
 
@@ -491,10 +490,6 @@ def myTodo():
 @login_required
 def addTodo():
     """Add ToDo item into ToDo list, then redirect back to show ToDo list"""
-    title = request.form.get("title")
-    new_todo = Todo(title=title, user_id=current_user.get_id(), complete=False)
-    db.session.add(new_todo)
-    db.session.commit()
     return redirect(url_for("myTodo"))
 
 
@@ -502,9 +497,6 @@ def addTodo():
 @login_required
 def updateTodo(todo_id):
     """Mark ToDo item to complete/not complete, then redirect back to show ToDo list"""
-    todo = Todo.query.filter_by(id=todo_id, user_id=current_user.get_id()).first()
-    todo.complete = not todo.complete
-    db.session.commit()
     return redirect(url_for("myTodo"))
 
 
@@ -512,9 +504,6 @@ def updateTodo(todo_id):
 @login_required
 def deleteTodo(todo_id):
     """Remove ToDo item from ToDo list, then redirect back to show ToDo list"""
-    todo = Todo.query.filter_by(id=todo_id, user_id=current_user.get_id()).first()
-    db.session.delete(todo)
-    db.session.commit()
     return redirect(url_for("myTodo"))
 
 
@@ -527,143 +516,10 @@ def page_not_found(e):
 myapp_obj.register_error_handler(404, page_not_found)
 
 
-@myapp_obj.route("/render", methods=['GET', 'POST'])
+@myapp_obj.route("/render")
 @login_required
 def render():
     """Route for user to render markdwon notes"""
-    form = RenderMarkdown()
     text = None
-    if form.validate_on_submit():
-        text = form.pagedown.data
-    else:
-        form.pagedown.data = ('Enter Markdown ')
-        return render_template('upload_md.html', form=form, text=text)
     return render_template("homepage.html")
 
-
-@myapp_obj.route("/note", methods=['GET', 'POST'])
-@login_required
-def show_notes():
-    """ Route to view a users notes"""
-    return redirect(url_for('view_notes', note_id=0)) # note_id 0 indicate no note to view
-
-
-@myapp_obj.route("/viewNote/<int:note_id>", methods=['GET', 'POST'])
-@login_required
-def view_notes(note_id):
-    '''Route to view note, this is similar to show_notes '''
-    note = None
-    html_text = None
-    posted_notes = []
-    search_text = request.form.get('text')
-    user_id = current_user.get_id()
-    search_form = SearchForm()
-    if search_text:
-        notes = Note.query.filter_by(user_id=current_user.get_id()).filter(Note.data.contains(search_text)).all()
-        if notes:
-            flash(f'{len(notes)} search results found')
-        else:
-            flash('No search results found', "error")
-    else:
-        notes = Note.query.filter_by(user_id=current_user.get_id()).all()
-        if note_id != 0:
-            note = Note.query.filter_by(id=note_id, user_id=current_user.get_id()).one_or_none()
-            html_text =  markdown.markdown(note.data)
-    for x in notes:
-        posted_notes = posted_notes + [{'name':f'{x.name}','id':f'{x.id}'}]
-    return render_template('note.html', title='Note', posted_notes=posted_notes, note=note, html_text=html_text, user_id=user_id, search_form=SearchForm())
-
-
-@myapp_obj.route("/download-note-as-pdf/<int:note_id>", methods=['GET', 'POST'])
-@login_required
-def download_note_as_pdf(note_id):
-    '''Route will allow for html note to be downloaded as pdf in the md file in a pdf directory'''
-    note = Note.query.filter_by(id=note_id, user_id=current_user.get_id()).one_or_none()
-    if not note:
-        abort(404, description=f"Note with id {note_id} doesn't exists")
-    html_text = markdown.markdown(note.data)
-    output_filename = note.name.split(".md")
-    output_filename = output_filename[0] + '.pdf'
-    with tempfile.TemporaryDirectory() as temp_dir:
-        pdf_filename = os.path.join(temp_dir, output_filename)
-        # Convert html to pdf
-        with open(pdf_filename, "wb+") as fp:
-            pisa_status = pisa.CreatePDF(html_text, dest=fp)
-        return send_file(pdf_filename, as_attachment=True)
-
-
-@myapp_obj.route("/upload-note", methods=['GET', 'POST'])
-@login_required
-def upload_note():
-    """Import note route, for user to import markdown file into note"""
-    form = UploadMarkdownForm()
-    if form.validate_on_submit():
-        n = form.file.data
-        filename = n.filename
-        content = n.stream.read().decode('ascii')
-        note = Note(name=filename, data=content, user_id=current_user.get_id())
-        db.session.add(note)
-        db.session.commit()
-        flash(f'Uploaded note {filename} ')
-        return redirect(url_for("show_notes"))
-    return render_template("import-note.html", form=form)
-
-
-@myapp_obj.route("/share-notes/<int:note_id>", methods=['GET', 'POST'])
-@login_required
-def share_note(note_id):
-    ''' route will allow user to share note to other users(friends)'''
-    note = Note.query.filter_by(id=note_id).one_or_none()
-    friends = []
-    for status, oth_user in get_all_friends(current_user.get_id()):
-        if status == 'friend':  # Only find friends
-            friends.append(oth_user)
-    form = NoteShareForm()
-    form.dropdown.choices = [(u.id, u.username) for u in friends]
-    if form.validate_on_submit():
-        user = User.query.filter_by(id=form.dropdown.data).one()
-        now = datetime.now()
-        shared_note = SharedNote(note_id=note_id, datetime=now, owner_user_id=current_user.get_id(), target_user_id=user.id)
-        db.session.add(shared_note)
-        db.session.commit()
-        flash(f'Shared note "{shared_note.note.name}" to "{user.username}" on {str(datetime.now())}')
-        return redirect(url_for("show_notes"))
-    return render_template("share-notes.html", note=note, form=form)
-
-
-@myapp_obj.route("/notes-sharing", methods=['GET', 'POST'])
-@login_required
-def notes_sharing():
-    """A route for viewing sharing status of notes (both shared to others and others shared to me)"""
-    owner_notes = SharedNote.query.filter_by(owner_user_id=current_user.get_id()).all()
-    target_notes = SharedNote.query.filter_by(target_user_id=current_user.get_id()).all()
-    return render_template("notes-sharing.html", owner_notes=owner_notes, target_notes=target_notes)
-
-
-@myapp_obj.route("/notes-sharing/add-to-mynotes/<int:sharing_id>", methods=['GET', 'POST'])
-@login_required
-def notes_sharing_add_to_mynotes(sharing_id):
-    """A route for adding shared note that other user shared into My Notes"""
-    sharing = SharedNote.query.get(sharing_id)
-    if int(current_user.get_id()) != sharing.owner_user_id and\
-        int(current_user.get_id()) != sharing.target_user_id:
-        abort(404, description='Invalid permission')
-    note = Note(name=sharing.note.name, data=sharing.note.data, user_id=current_user.get_id())
-    db.session.add(note)
-    db.session.commit()
-    flash(f'Copied note(#{sharing.note.id}) to "My Notes", new note(#{note.id})')
-    return redirect(url_for('notes_sharing'))
-
-
-@myapp_obj.route("/notes-sharing/cancel-sharing/<int:sharing_id>", methods=['GET', 'POST'])
-@login_required
-def notes_sharing_cancel_sharing(sharing_id):
-    """A route for cancelling a flashcard sharing"""
-    sharing = SharedNote.query.get(sharing_id)
-    if int(current_user.get_id()) != sharing.owner_user_id and\
-        int(current_user.get_id()) != sharing.target_user_id:
-        abort(404, description='Invalid permission')
-    flash(f'Sharing of note(#{sharing.note.id}) cancelled')
-    db.session.delete(sharing)
-    db.session.commit()
-    return redirect(url_for('notes_sharing'))

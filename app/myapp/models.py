@@ -70,7 +70,6 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(64))
     avatar = db.Column(db.LargeBinary, default=_get_default_avatar())
     flashcards = db.relationship('FlashCard', backref='user', lazy='dynamic')
-    notes = db.relationship('Note', backref='user', lazy='dynamic')
     friends1 = db.relationship('Friend', backref='user1' , lazy='dynamic', foreign_keys=[Friend.user1_id])
     friends2 = db.relationship('Friend', backref='user2' , lazy='dynamic', foreign_keys=[Friend.user2_id])
 
@@ -83,19 +82,6 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return f'<User {self.id}: {self.username}, {self.password}>'
 
-
-class Todo(db.Model):
-    """Saves ToDo lists of users
-
-    Attributes:
-        id: Primary key
-        title: String column, save the title of things to do
-        complete: Boolean column, mark whether that item is completed
-    """
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100))
-    complete = db.Column(db.Boolean)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
 @login.user_loader
@@ -145,39 +131,7 @@ class SharedFlashCard(db.Model):
     target_user = db.relationship('User', foreign_keys=[target_user_id])
 
 
-class Note(db.Model):
-    """Database table for notes
-
-     Attributes:
-         id: Primary key
-         name: String column, title of note
-         data: text column, containing files data
-         User: id if user who added notes
-     """
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    data = db.Column(db.Text)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    sharings = db.relationship('SharedNote', backref='note', cascade='all, delete')
     def __repr__(self):
         return f'<{self.name}   {self.data}>'
 
 
-class SharedNote(db.Model):
-    """Saves sharing information of notes
-
-    Attributes:
-        id: Primary key
-        datetime: Datetime column, time of sharing
-        note_id: Integer column, id of note that is shared
-        owner_user_id: Integer column, id of person sharing the note
-        target_user_id: Integer column, id of person that was shared with the note
-    """
-    id = db.Column(db.Integer, primary_key=True)
-    datetime = db.Column(db.DateTime)
-    note_id = db.Column(db.Integer, db.ForeignKey('note.id'))
-    owner_user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    target_user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    owner_user = db.relationship('User', foreign_keys=[owner_user_id])
-    target_user = db.relationship('User', foreign_keys=[target_user_id])
