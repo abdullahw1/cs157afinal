@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
+import threading
+import webbrowser
 from myapp import myapp_obj, db
 
 DEBUG = False
-PORT_NUMBER = 5096
 
 def launch_browser():
     webbrowser.open(f'http://localhost:{PORT_NUMBER}', new=0)
@@ -18,7 +20,5 @@ except:
 #    threading.Timer(1, launch_browser).start()
 
 # Run flask app server
-
-myapp_obj.run(debug=DEBUG, port=PORT_NUMBER)
 if __name__ == '__main__':
     myapp_obj.run(debug=DEBUG)
