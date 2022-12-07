@@ -1,7 +1,7 @@
 from myapp import myapp_obj, db
 
 DEBUG = False
-PORT_NUMBER = 5099
+PORT_NUMBER = 5096
 
 def launch_browser():
     webbrowser.open(f'http://localhost:{PORT_NUMBER}', new=0)
