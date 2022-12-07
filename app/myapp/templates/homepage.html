@@ -18,19 +18,7 @@
                         <div class="col-12 col-lg-8">
                             <div class="welcome-title">
                                 <div class="words word-1">
-                                    <span>S</span>
-                                    <span>T</span>
-                                    <span>U</span>
-                                    <span>D</span>
-                                    <span>Y</span>
-                                    <span>2</span>
-                                    <span>S</span>
-                                    <span>U</span>
-                                    <span>C</span>
-                                    <span>C</span>
-                                    <span>E</span>
-                                    <span>S</span>
-                                    <span>S</span>
+                                    <span>FlashQuiz</span>
                                 </div>
                             </div>
                         </div>
@@ -38,7 +26,7 @@
                         <div class="col-12 col-lg-2"></div>
                         <div class="col-12 col-md-8 col-lg-4 text-md-start">
                             <div class="logan">
-                                <h1 class="mb-3 logan-top">MAKE <br>YOUR STUDY <br> EXPERIENCE BETTER</h1>
+                                <h1 class="mb-3 logan-top">Learning  <br>Made <br> Easier</h1>
                                 <!-- <p class="logan-top">MAKE <br>YOUR STUDY <br> EXPERIENCE BETTER</h1> -->
                                 <p class="lead mb-4 pl-0">Learning made easy
                                     <img class="logan-stick" src="{{ url_for('static', filename='images/stick.svg') }}">
@@ -271,184 +259,9 @@
                                     </div>
             
                                     <div class="col-12 mt-5">
-                                        <!--notes-->
-                                        <div class="container">
-                                            <div class="row">
-            
-                                                <div class="col-12 col-md-4 mb-5">
-                                                    <div class="container notes">
-                                                        <div class="row">
-                                                            <div class="col-12">
-                                                                <h2 class="display-5 fw-normal heading">Notes</h2>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-12">
-                                                                <p class="lead">Best way to store your thoughts and ideas. Import
-                                                                    markdown
-                                                                    files into notes, share them with others,
-                                                                    and access them from your computer, phone or tablet</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-md-8 mb-5">
-                                                    <div class="container-fluid">
-            
-                                                        <!-- Slider main container -->
-                                                        <div class="swiper" id="swiper-container">
-                                                            <div class="swiper-wrapper">
-                                                                <div class="swiper-slide">
-                                                                    <div class="card" style="width: 100%;">
-                                                                        <div class="container image">
-                                                                            <img class="card-img-top"
-                                                                                src="{{ url_for('static', filename='images/importnote.gif') }}"
-                                                                                alt="Card image cap">
-                                                                        </div>
-                                                                        <div class="card-body">
-                                                                            <h5 class="card-title">Import Markdown file</h5>
-                                                                            <p class="card-text">Convert your markdown file into
-                                                                                notes by
-                                                                                click on "upload from markdown" button</p>
-                                                                            <a href="/note" class="btn btn-warning">My Notes</a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-            
-                                                                <div class="swiper-slide">
-                                                                    <div class="card" style="width: 100%;">
-                                                                        <div class="container image">
-                                                                            <img class="card-img-top"
-                                                                                src="{{ url_for('static', filename='images/navigatenote.gif') }}"
-                                                                                alt="Card image cap">
-                                                                        </div>
-                                                                        <div class="card-body">
-                                                                            <h5 class="card-title">Navigate between Notes</h5>
-                                                                            <p class="card-text">Quickly view and navigate between
-                                                                                your
-                                                                                notes</p>
-                                                                            <a href="/note" class="btn btn-warning">My Notes</a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-            
-                                                                <div class="swiper-slide">
-                                                                    <div class="card" style="width: 100%;">
-                                                                        <div class="container image">
-                                                                            <img class="card-img-top"
-                                                                                src="{{ url_for('static', filename='images/searchnote.gif') }}"
-                                                                                alt="Card image cap">
-                                                                        </div>
-                                                                        <div class="card-body">
-                                                                            <h5 class="card-title">Search text in Notes</h5>
-                                                                            <p class="card-text">Finding text has been easy with
-                                                                                "Search
-                                                                                text in Notes" feature. Typing the word that you
-                                                                                want to
-                                                                                search, a list of notes that contains that word will
-                                                                                be
-                                                                                shown</p>
-                                                                            <a href="/note" class="btn btn-warning">My Notes</a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-            
-                                                                <div class="swiper-slide">
-                                                                    <div class="card" style="width: 100%;">
-                                                                        <div class="container image">
-                                                                            <img class="card-img-top"
-                                                                                src="{{ url_for('static', filename='images/sharenote.gif') }}"
-                                                                                alt="Card image cap">
-                                                                        </div>
-                                                                        <div class="card-body">
-                                                                            <h5 class="card-title">Share Notes with Friends</h5>
-                                                                            <p class="card-text">Easily sharing your ideas with your
-                                                                                friends
-                                                                                through
-                                                                                note sharing</p>
-                                                                            <a href="/note" class="btn btn-warning">My Notes</a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-            
-                                                                <div class="swiper-slide">
-                                                                    <div class="card" style="width: 100%;">
-                                                                        <div class="container image">
-                                                                            <img class="card-img-top"
-                                                                                src="{{ url_for('static', filename='images/downnote.gif') }}"
-                                                                                alt="Card image cap">
-                                                                        </div>
-                                                                        <div class="card-body">
-                                                                            <h5 class="card-title">Download pdf of Notes</h5>
-                                                                            <p class="card-text">Instantly turn your notes into pdf
-                                                                                file</p>
-                                                                            <a href="/note" class="btn btn-warning">My Notes</a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-            
-                                                            </div>
-                                                            <!-- If we need navigation buttons -->
-                                                            <div class="swiper-button-prev"></div>
-                                                            <div class="swiper-button-next"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-            
-                                    <div class="col-12 mt-5">
 
-                                        <!--Todo list-->
-                                        <div class="container">
-                                            <div class="row">
-                
-                                                <div class="col-12 col-md-4 mb-5">
-                                                    <div class="container todo-list">
-                                                        <div class="row">
-                                                            <div class="col-12">
-                                                                <h2 class="display-5 fw-normal heading">Todo list</h2>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-12">
-                                                                <p class="lead">Manage and organize your tasks effectively with our todo
-                                                                    list
-                                                                    feature. Our
-                                                                    todo list feature will help you get everything done, in the right
-                                                                    order</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                
-                                                <div class="col-12 col-md-8 mb-5">
-                                                    <div class="container-fluid">
-                                                        <div class="card" style="width: 100%;">
-                                                            <div class="container image">
-                                                                <img class="card-img-top" src="{{ url_for('static', filename='images/todo1.gif') }}"
-                                                                    alt="Card image cap">
-                                                            </div>
-                                                            <div class="card-body">
-                                                                <h5 class="card-title">Todo list</h5>
-                                                                <p class="card-text">Add your task you have to complete into to do list,
-                                                                    update
-                                                                    your progress. Our todo list sets you up for success by helping you
-                                                                    manage,
-                                                                    prioritize, and complete your goals and taks</p>
-                                                                <a href="/todo" class="btn btn-warning">Todo Tracker</a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                
-                                                <!-- <div class="col-12">
-                                                        <div class="todo-list">
-                                                            <h2 class="display-5 fw-normal heading">Todo list</h2>
-                                                            <p class="lead"></p>
-                                                        </div>
-                                                    </div> -->
+
+
                                             </div>
                                         </div>
                                     </div>
